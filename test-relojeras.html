@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luxury Watch Brand Personality Test</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #f5f5f5;
+            font-family: 'Montserrat', sans-serif;
+        }
+        h1, h2, p {
+            text-align: center;
+        }
+        .question {
+            margin: 20px;
+            padding: 20px;
+            border: 1px solid #d4af37;
+            border-radius: 10px;
+            background-color: #282828;
+        }
+        .options {
+            display: flex;
+            justify-content: space-around;
+        }
+        .option {
+            background-color: #d4af37;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .option:hover {
+            background-color: #c49d31;
+        }
+        .progress {
+            width: 100%;
+            background-color: #4caf50;
+            height: 20px;
+            border-radius: 5px;
+            margin: 30px 0;
+        }
+        .result {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Luxury Watch Brand Personality Test</h1>
+    <div id="test">
+        <div class="question">
+            <h2>1. What is your preferred watch material?</h2>
+            <div class="options">
+                <div class="option">A. Gold</div>
+                <div class="option">B. Stainless Steel</div>
+                <div class="option">C. Titanium</div>
+                <div class="option">D. Plastic</div>
+            </div>
+        </div>
+        <div class="question">
+            <h2>2. How do you feel about complications?</h2>
+            <div class="options">
+                <div class="option">A. I love them!</div>
+                <div class="option">B. They're interesting.</div>
+                <div class="option">C. I'd rather keep it simple.</div>
+                <div class="option">D. Complications confuse me.</div>
+            </div>
+        </div>
+        <div class="question">
+            <h2>3. What size do you prefer your watches?</h2>
+            <div class="options">
+                <div class="option">A. Large</div>
+                <div class="option">B. Medium</div>
+                <div class="option">C. Small</div>
+                <div class="option">D. I don't care about size.</div>
+            </div>
+        </div>
+        <div class="question">
+            <h2>4. How important is the brand to you?</h2>
+            <div class="options">
+                <div class="option">A. Very important</div>
+                <div class="option">B. Somewhat important</div>
+                <div class="option">C. Not very important</div>
+                <div class="option">D. I couldn't care less</div>
+            </div>
+        </div>
+        <div class="question">
+            <h2>5. What movement do you prefer?</h2>
+            <div class="options">
+                <div class="option">A. Mechanical</div>
+                <div class="option">B. Automatic</div>
+                <div class="option">C. Quartz</div>
+                <div class="option">D. Nothing specific</div>
+            </div>
+        </div>
+        <div class="question">
+            <h2>6. What do you find most appealing in a watch?</h2>
+            <div class="options">
+                <div class="option">A. Design</div>
+                <div class="option">B. Functionality</div>
+                <div class="option">C. Heritage</div>
+                <div class="option">D. Trendiness</div>
+            </div>
+        </div>
+        <div class="question">
+            <h2>7. Where do you prefer your watches to be made?</h2>
+            <div class="options">
+                <div class="option">A. Switzerland</div>
+                <div class="option">B. Germany</div>
+                <div class="option">C. Japan</div>
+                <div class="option">D. China</div>
+            </div>
+        </div>
+        <div class="question">
+            <h2>8. How do you use your watch?</h2>
+            <div class="options">
+                <div class="option">A. Daily wear</div>
+                <div class="option">B. Special occasions</div>
+                <div class="option">C. I collect them</div>
+                <div class="option">D. I don't really use watches</div>
+            </div>
+        </div>
+        <div class="question">
+            <h2>9. How often do you research watches?</h2>
+            <div class="options">
+                <div class="option">A. All the time!</div>
+                <div class="option">B. Sometimes</div>
+                <div class="option">C. Rarely</div>
+                <div class="option">D. Never</div>
+            </div>
+        </div>
+        <div class="question">
+            <h2>10. What's your budget for a luxury watch?</h2>
+            <div class="options">
+                <div class="option">A. No limit</div>
+                <div class="option">B. Over $5k</div>
+                <div class="option">C. $1k - $5k</div>
+                <div class="option">D. Under $1k</div>
+            </div>
+        </div>
+        <div class="progress" id="progressBar"></div>
+        <div class="result" id="resultText"></div>
+    </div>
+    <script>
+        let score = 0;
+        const options = document.querySelectorAll('.option');
+        options.forEach(option => {
+            option.addEventListener('click', () => {
+                score += parseInt(option.textContent.charAt(0));
+                updateProgress();
+            });
+        });
+
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const resultText = document.getElementById('resultText');
+            progressBar.style.width = (score / 100 * 100) + '%';
+            if (score >= 30) {
+                resultText.innerHTML = 'Result: Patek Philippe';
+            } else if (score >= 22) {
+                resultText.innerHTML = 'Result: Rolex';
+            } else {
+                resultText.innerHTML = 'Result: Apple Watch';
+            }
+        }
+    </script>
+</body>
+</html>
