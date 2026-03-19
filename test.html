@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Qué Reloj Eres? — Test de Personalidad</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold: #C9A84C;
+    --gold-light: #E8D5A3;
+    --gold-dark: #8B6914;
+    --black: #0A0A0A;
+    --dark: #111111;
+    --dark2: #1A1A1A;
+    --dark3: #242424;
+    --white: #F5F2EC;
+    --gray: #888;
+    --gray-light: #555;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  /* HEADER */
+  .header {
+    position: relative;
+    text-align: center;
+    padding: 80px 20px 60px;
+    border-bottom: 1px solid #2a2a2a;
+    overflow: hidden;
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -60px; left: 50%;
+    transform: translateX(-50%);
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .header-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+  }
+
+  .header-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 8vw, 88px);
+    font-weight: 300;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--white);
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+
+  .header-title em {
+    font-style: italic;
+    color: var(--gold);
+  }
+
+  .header-sub {
+    font-size: 13px;
+    letter-spacing: 0.12em;
+    color: var(--gray);
+    margin-top: 20px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.6s forwards;
+  }
+
+  .header-line {
+    width: 60px;
+    height: 1px;
+    background: var(--gold);
+    margin: 28px auto 0;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.7s forwards;
+  }
+
+  /* BRANDS INTRO */
+  .brands-strip {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0;
+    padding: 28px 20px;
+    border-bottom: 1px solid #1e1e1e;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.9s forwards;
+  }
+
+  .brand-pill {
+    font-size: 9px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--gray-light);
+    padding: 0 20px;
+    border-right: 1px solid #2a2a2a;
+  }
+  .brand-pill:last-child { border-right: none; }
+  .brand-pill.gold { color: var(--gold); }
+
+  /* MAIN CONTAINER */
+  .container {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 60px 24px 100px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* PROGRESS */
+  .progress-wrap {
+    margin-bottom: 48px;
+  }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .progress-label {
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--gold);
+    text-transform: uppercase;
+  }
+
+  .progress-count {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--gray);
+  }
+
+  .progress-track {
+    height: 1px;
+    background: #2a2a2a;
+    position: relative;
+  }
+
+  .progress-fill {
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold-dark), var(--gold));
+    transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    position: relative;
+  }
+
+  .progress-fill::after {
+    content: '';
+    position: absolute;
+    right: -3px; top: -3px;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  /* QUESTION */
+  .question-block {
+    animation: fadeUp 0.5s ease forwards;
+  }
+
+  .question-number {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .question-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(24px, 4vw, 34px);
+    font-weight: 300;
+    line-height: 1.35;
+    color: var(--white);
+    margin-bottom: 36px;
+  }
+
+  /* OPTIONS */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 48px;
+  }
+
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 18px 22px;
+    border: 1px solid #2a2a2a;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    text-align: left;
+    color: var(--white);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .option::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, rgba(201,168,76,0.06) 0%, transparent 100%);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
+
+  .option:hover { border-color: #444; }
+  .option:hover::before { opacity: 1; }
+
+  .option.selected {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.05);
+  }
+  .option.selected::before { opacity: 1; }
+
+  .option-letter {
+    width: 28px; height: 28px;
+    border: 1px solid #333;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: var(--gray);
+    flex-shrink: 0;
+    transition: all 0.25s ease;
+  }
+
+  .option.selected .option-letter {
+    border-color: var(--gold);
+    color: var(--gold);
+    background: rgba(201,168,76,0.1);
+  }
+
+  .option-text {
+    font-size: 14px;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  .option-check {
+    margin-left: auto;
+    width: 16px; height: 16px;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    flex-shrink: 0;
+  }
+
+  .option-check::before, .option-check::after {
+    content: '';
+    position: absolute;
+    background: var(--gold);
+  }
+
+  .option.selected .option-check { opacity: 1; }
+
+  /* NAV BUTTONS */
+  .nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .btn {
+    padding: 14px 32px;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    border: none;
+    font-weight: 500;
+  }
+
+  .btn-back {
+    background: transparent;
+    border: 1px solid #2a2a2a;
+    color: var(--gray);
+  }
+  .btn-back:hover { border-color: #444; color: var(--white); }
+  .btn-back:disabled { opacity: 0.2; cursor: not-allowed; }
+
+  .btn-next {
+    background: var(--gold);
+    color: var(--black);
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-next::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .btn-next:hover::before { transform: translateX(100%); }
+  .btn-next:disabled { opacity: 0.25; cursor: not-allowed; }
+
+  /* RESULT */
+  .result-block {
+    animation: fadeUp 0.7s ease forwards;
+  }
+
+  .result-eyebrow {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .result-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 8vw, 80px);
+    font-weight: 300;
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 8px;
+  }
+
+  .result-brand em { color: var(--gold); font-style: italic; }
+
+  .result-tagline {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 36px;
+  }
+
+  .result-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, var(--gold), transparent);
+    margin-bottom: 36px;
+  }
+
+  .result-desc {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1.7;
+    color: #ccc;
+    margin-bottom: 48px;
+  }
+
+  .score-display {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 24px;
+    border: 1px solid #2a2a2a;
+    margin-bottom: 40px;
+    background: rgba(201,168,76,0.03);
+  }
+
+  .score-big {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 56px;
+    font-weight: 300;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .score-detail {
+    flex: 1;
+  }
+
+  .score-label {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    color: var(--gray);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .score-bar-wrap { display: flex; flex-direction: column; gap: 8px; }
+
+  .score-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .score-bar-name {
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray);
+    width: 90px;
+    flex-shrink: 0;
+  }
+
+  .score-bar-track {
+    flex: 1;
+    height: 2px;
+    background: #2a2a2a;
+  }
+
+  .score-bar-fill {
+    height: 2px;
+    background: var(--gold);
+    transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .score-bar-pts {
+    font-size: 10px;
+    color: var(--gray);
+    width: 28px;
+    text-align: right;
+  }
+
+  .result-cta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  /* DECORATIVE */
+  .deco-circle {
+    position: fixed;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .deco-1 {
+    width: 500px; height: 500px;
+    top: -200px; right: -150px;
+    border: 1px solid rgba(201,168,76,0.06);
+  }
+
+  .deco-2 {
+    width: 300px; height: 300px;
+    bottom: 100px; left: -100px;
+    border: 1px solid rgba(201,168,76,0.04);
+  }
+
+  .deco-3 {
+    width: 800px; height: 800px;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(201,168,76,0.03);
+  }
+
+  /* ROMAN NUMERALS DECO */
+  .roman-bg {
+    position: fixed;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 200px;
+    font-weight: 300;
+    color: rgba(201,168,76,0.02);
+    top: 50%; right: -20px;
+    transform: translateY(-50%);
+    user-select: none;
+    pointer-events: none;
+    z-index: 0;
+    letter-spacing: -0.05em;
+    line-height: 1;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes shimmer {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(100%); }
+  }
+
+  /* MOBILE */
+  @media (max-width: 600px) {
+    .brands-strip { flex-wrap: wrap; gap: 12px; }
+    .brand-pill { border: none; }
+    .score-display { flex-direction: column; align-items: flex-start; }
+    .result-cta { flex-direction: column; }
+    .btn { width: 100%; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Decorative elements -->
+<div class="deco-circle deco-1"></div>
+<div class="deco-circle deco-2"></div>
+<div class="deco-circle deco-3"></div>
+<div class="roman-bg" id="romanBg">XII</div>
+
+<!-- Header -->
+<header class="header">
+  <p class="header-eyebrow">Test de Personalidad Relojera</p>
+  <h1 class="header-title">¿Qué <em>reloj</em><br>eres tú?</h1>
+  <p class="header-sub">10 preguntas · Alta relojería</p>
+  <div class="header-line"></div>
+</header>
+
+<!-- Brands strip -->
+<div class="brands-strip">
+  <span class="brand-pill gold">Patek Philippe</span>
+  <span class="brand-pill">Rolex</span>
+  <span class="brand-pill">Audemars Piguet</span>
+  <span class="brand-pill">Cartier</span>
+  <span class="brand-pill">A. Lange & Söhne</span>
+</div>
+
+<!-- Main -->
+<main class="container">
+  <div id="quiz"></div>
+</main>
+
+<script>
+const romans = ['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+
+const questions = [
+  {
+    text: "¿Cómo te gustan los relojes?",
+    opts: [
+      { letter:"A", text:"Gigantes, presencia imponente", pts:{patek:1,rolex:2,ap:2,cartier:1,lange:0} },
+      { letter:"B", text:"Discretos, que hablen solos", pts:{patek:3,rolex:1,ap:0,cartier:2,lange:3} },
+      { letter:"C", text:"Deportivos, resistentes al límite", pts:{patek:0,rolex:3,ap:3,cartier:0,lange:1} },
+      { letter:"D", text:"Elegantes, una obra de arte en la muñeca", pts:{patek:3,rolex:1,ap:1,cartier:3,lange:3} },
+    ]
+  },
+  {
+    text: "¿Cuál material te seduce más?",
+    opts: [
+      { letter:"A", text:"Acero inoxidable — indestructible e icónico", pts:{patek:1,rolex:3,ap:3,cartier:0,lange:1} },
+      { letter:"B", text:"Oro — la nobleza de los metales", pts:{patek:3,rolex:2,ap:1,cartier:3,lange:3} },
+      { letter:"C", text:"Platino — exclusividad absoluta", pts:{patek:4,rolex:1,ap:2,cartier:2,lange:4} },
+      { letter:"D", text:"Titanio — tecnología y ligereza", pts:{patek:0,rolex:2,ap:2,cartier:0,lange:0} },
+    ]
+  },
+  {
+    text: "¿Cómo prefieres la maquinaria?",
+    opts: [
+      { letter:"A", text:"Sencilla — funcional y sin pretensiones", pts:{patek:0,rolex:2,ap:1,cartier:1,lange:0} },
+      { letter:"B", text:"Normal — automática y confiable", pts:{patek:1,rolex:3,ap:2,cartier:1,lange:1} },
+      { letter:"C", text:"Complicada — perpetuo, cronógrafo, minute repeater", pts:{patek:3,rolex:1,ap:2,cartier:2,lange:3} },
+      { letter:"D", text:"Ultra complicada — cuantas más funciones, mejor", pts:{patek:4,rolex:0,ap:2,cartier:1,lange:4} },
+    ]
+  },
+  {
+    text: "¿Qué estética te representa?",
+    opts: [
+      { letter:"A", text:"Clásico — atemporal, redondo, sobrio", pts:{patek:3,rolex:2,ap:0,cartier:3,lange:3} },
+      { letter:"B", text:"Moderno — líneas limpias, dial minimalista", pts:{patek:1,rolex:2,ap:2,cartier:1,lange:2} },
+      { letter:"C", text:"Audaz — octagonal, integrado, rupturista", pts:{patek:0,rolex:1,ap:4,cartier:0,lange:0} },
+      { letter:"D", text:"Joyero — diamantes, esmalte, lujo visible", pts:{patek:2,rolex:0,ap:0,cartier:4,lange:1} },
+    ]
+  },
+  {
+    text: "¿Qué movimiento prefieres?",
+    opts: [
+      { letter:"A", text:"Manual — el ritual de dar cuerda cada día", pts:{patek:3,rolex:0,ap:1,cartier:2,lange:4} },
+      { letter:"B", text:"Automático — se carga solo con el movimiento", pts:{patek:2,rolex:3,ap:3,cartier:1,lange:2} },
+      { letter:"C", text:"Cuarzo de alta precisión — exactitud ante todo", pts:{patek:0,rolex:1,ap:0,cartier:2,lange:0} },
+      { letter:"D", text:"Coaxial o manufactura propia — pureza técnica", pts:{patek:3,rolex:2,ap:2,cartier:0,lange:3} },
+    ]
+  },
+  {
+    text: "¿Qué tamaño te sienta mejor?",
+    opts: [
+      { letter:"A", text:"28 – 32 mm — elegancia clásica, femenino", pts:{patek:3,rolex:1,ap:0,cartier:3,lange:2} },
+      { letter:"B", text:"36 – 38 mm — el equilibrio perfecto", pts:{patek:3,rolex:3,ap:1,cartier:2,lange:3} },
+      { letter:"C", text:"40 – 42 mm — presencia y autoridad", pts:{patek:1,rolex:3,ap:3,cartier:1,lange:2} },
+      { letter:"D", text:"44 mm + — statement que no pasa desapercibido", pts:{patek:0,rolex:2,ap:4,cartier:0,lange:0} },
+    ]
+  },
+  {
+    text: "¿Cuál complicación te fascina?",
+    opts: [
+      { letter:"A", text:"Tourbillon — gravedad domada por el arte", pts:{patek:4,rolex:0,ap:2,cartier:2,lange:4} },
+      { letter:"B", text:"Minute repeater — música mecánica", pts:{patek:4,rolex:0,ap:1,cartier:2,lange:3} },
+      { letter:"C", text:"Perpetual calendar — el tiempo sin fin", pts:{patek:4,rolex:1,ap:2,cartier:1,lange:4} },
+      { letter:"D", text:"Ninguna — el buen tiempo me basta", pts:{patek:0,rolex:3,ap:2,cartier:1,lange:0} },
+    ]
+  },
+  {
+    text: "¿Qué tipo de maison prefieres?",
+    opts: [
+      { letter:"A", text:"Familia independiente — alma pura", pts:{patek:4,rolex:2,ap:3,cartier:0,lange:4} },
+      { letter:"B", text:"Gran grupo de lujo — recursos infinitos", pts:{patek:0,rolex:0,ap:0,cartier:3,lange:0} },
+      { letter:"C", text:"Icono mundial — reconocido en todo el planeta", pts:{patek:2,rolex:4,ap:2,cartier:3,lange:1} },
+      { letter:"D", text:"Manufactura artesanal — el tiempo tiene precio", pts:{patek:3,rolex:1,ap:2,cartier:1,lange:4} },
+    ]
+  },
+  {
+    text: "¿Qué nivel de exclusividad buscas?",
+    opts: [
+      { letter:"A", text:"Edición limitada numerada — exclusivo pero accesible", pts:{patek:2,rolex:2,ap:3,cartier:2,lange:2} },
+      { letter:"B", text:"Solo por encargo — lista de espera de años", pts:{patek:4,rolex:1,ap:3,cartier:2,lange:4} },
+      { letter:"C", text:"Icónico y reconocible — el símbolo universal", pts:{patek:1,rolex:4,ap:2,cartier:3,lange:0} },
+      { letter:"D", text:"Piezas únicas — ninguna igual en el mundo", pts:{patek:4,rolex:0,ap:2,cartier:3,lange:3} },
+    ]
+  },
+  {
+    text: "¿Qué origen relojero te seduce?",
+    opts: [
+      { letter:"A", text:"Ginebra, Suiza — cuna de la alta relojería", pts:{patek:4,rolex:4,ap:3,cartier:0,lange:0} },
+      { letter:"B", text:"Valle de Joux, Suiza — el corazón secreto", pts:{patek:3,rolex:1,ap:4,cartier:0,lange:0} },
+      { letter:"C", text:"Glashütte, Alemania — precisión y rigor teutón", pts:{patek:0,rolex:0,ap:0,cartier:0,lange:5} },
+      { letter:"D", text:"París, Francia — joyería y moda en el tiempo", pts:{patek:0,rolex:0,ap:0,cartier:5,lange:0} },
+    ]
+  },
+];
+
+const brands = {
+  patek: {
+    name: "Patek Philippe",
+    nameHTML: "<em>Patek</em> Philippe",
+    tag: "Ginebra · Fundada en 1839",
+    desc: "Eres la definición de la elegancia trascendente. Valoras el patrimonio, la complejidad mecánica y piensas en legados que van más allá de tu propia existencia. \"Nunca posees un Patek Philippe; simplemente lo custodias para la siguiente generación.\" Eres ese tipo de persona.",
+  },
+  rolex: {
+    name: "Rolex",
+    nameHTML: "<em>Rolex</em>",
+    tag: "Ginebra · Fundada en 1905",
+    desc: "Eres determinado, conquistador y sabes exactamente lo que quieres. El Rolex es el símbolo universal del éxito logrado a pulso. No necesita presentación — igual que tú. Robusto, confiable, icónico. Una declaración de llegada que el mundo entero entiende.",
+  },
+  ap: {
+    name: "Audemars Piguet",
+    nameHTML: "<em>Audemars</em> Piguet",
+    tag: "Le Brassus · Fundada en 1875",
+    desc: "Eres audaz, disruptivo y no juegas según las reglas de los demás — las reescribes tú. El Royal Oak fue el reloj que sacudió los cimientos de la alta relojería en 1972. Acero, precio de oro, octagonal y brutal. Exactamente como opera tu mentalidad.",
+  },
+  cartier: {
+    name: "Cartier",
+    nameHTML: "<em>Cartier</em>",
+    tag: "París · Fundada en 1847",
+    desc: "Eres un alma artística con sentido innato de la belleza y la joyería. Para ti, el tiempo no se mide — se luce. El Tank, el Santos, la Panthère: piezas que son moda, arte y relojería en un solo gesto parisino. Tu elegancia no sigue tendencias; las crea.",
+  },
+  lange: {
+    name: "A. Lange & Söhne",
+    nameHTML: "A. <em>Lange</em> & Söhne",
+    tag: "Glashütte · Fundada en 1845",
+    desc: "Eres perfeccionista silencioso, conocedor profundo y no necesitas aprobación externa. La manufactura alemana que renació literalmente de las cenizas en 1994 para crear algunos de los relojes más perfectos del mundo. Eres raro, exigente y extraordinario.",
+  },
+};
+
+let current = 0;
+let answers = {};
+
+function getScores() {
+  const s = {patek:0,rolex:0,ap:0,cartier:0,lange:0};
+  Object.values(answers).forEach(o => {
+    Object.entries(o.pts).forEach(([b,v]) => { s[b]+=v; });
+  });
+  return s;
+}
+
+function getWinner(s) {
+  return Object.entries(s).sort((a,b)=>b[1]-a[1])[0][0];
+}
+
+function updateRomanBg(n) {
+  document.getElementById('romanBg').textContent = romans[n] || 'XII';
+}
+
+function renderQuestion() {
+  updateRomanBg(current);
+  const q = questions[current];
+  const pct = Math.round((current / questions.length) * 100);
+  const sel = answers[current];
+
+  document.getElementById('quiz').innerHTML = `
+    <div class="progress-wrap">
+      <div class="progress-meta">
+        <span class="progress-label">Progreso</span>
+        <span class="progress-count">${current + 1} / ${questions.length}</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="pf" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <p class="question-number">Pregunta ${String(current+1).padStart(2,'0')}</p>
+      <h2 class="question-text">${q.text}</h2>
+      <div class="options">
+        ${q.opts.map((o,i) => `
+          <button class="option${sel===o?' selected':''}" onclick="pick(${i})">
+            <span class="option-letter">${o.letter}</span>
+            <span class="option-text">${o.text}</span>
+            ${sel===o ? `<svg class="option-check" width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8L6.5 11.5L13 5" stroke="#C9A84C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>` : ''}
+          </button>
+        `).join('')}
+      </div>
+      <div class="nav">
+        <button class="btn btn-back" onclick="prev()" ${current===0?'disabled':''}>← Anterior</button>
+        <button class="btn btn-next" onclick="next()" ${!sel?'disabled':''}>
+          ${current===questions.length-1 ? 'Ver mi resultado' : 'Siguiente'} →
+        </button>
+      </div>
+    </div>
+  `;
+
+  setTimeout(() => {
+    const pf = document.getElementById('pf');
+    if (pf) pf.style.width = pct + '%';
+  }, 50);
+}
+
+function renderResult() {
+  const scores = getScores();
+  const winner = getWinner(scores);
+  const b = brands[winner];
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const max = sorted[0][1];
+  const brandNames = {patek:'Patek Philippe',rolex:'Rolex',ap:'Audemars Piguet',cartier:'Cartier',lange:'A. Lange & Söhne'};
+
+  updateRomanBg(0);
+  document.getElementById('romanBg').textContent = '✦';
+
+  document.getElementById('quiz').innerHTML = `
+    <div class="result-block">
+      <p class="result-eyebrow">Tu reloj es</p>
+      <h2 class="result-brand">${b.nameHTML}</h2>
+      <p class="result-tagline">${b.tag}</p>
+      <div class="result-divider"></div>
+      <p class="result-desc">${b.desc}</p>
+
+      <div class="score-display">
+        <div class="score-big">${scores[winner]}</div>
+        <div class="score-detail">
+          <p class="score-label">Afinidad por marca</p>
+          <div class="score-bar-wrap">
+            ${sorted.map(([k,v]) => `
+              <div class="score-bar-row">
+                <span class="score-bar-name">${brandNames[k]}</span>
+                <div class="score-bar-track">
+                  <div class="score-bar-fill" id="bar-${k}" style="width:0%"></div>
+                </div>
+                <span class="score-bar-pts">${v}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+
+      <div class="result-cta">
+        <button class="btn btn-next" onclick="restart()">Repetir el test →</button>
+        <button class="btn btn-back" onclick="shareResult('${b.name}')">Compartir resultado</button>
+      </div>
+    </div>
+  `;
+
+  setTimeout(() => {
+    sorted.forEach(([k,v]) => {
+      const el = document.getElementById('bar-'+k);
+      if (el) el.style.width = (max > 0 ? Math.round((v/max)*100) : 0) + '%';
+    });
+  }, 100);
+}
+
+function pick(i) {
+  answers[current] = questions[current].opts[i];
+  renderQuestion();
+}
+
+function next() {
+  if (!answers[current]) return;
+  if (current < questions.length - 1) { current++; renderQuestion(); }
+  else renderResult();
+}
+
+function prev() {
+  if (current > 0) { current--; renderQuestion(); }
+}
+
+function restart() {
+  current = 0;
+  answers = {};
+  renderQuestion();
+}
+
+function shareResult(brand) {
+  if (navigator.share) {
+    navigator.share({ title: '¿Qué reloj eres?', text: `Mi reloj es ${brand}. ¿Cuál es el tuyo?` });
+  } else {
+    navigator.clipboard?.writeText(`Mi reloj es ${brand}. Descubre el tuyo en este test de personalidad relojera.`);
+    alert('¡Resultado copiado al portapapeles!');
+  }
+}
+
+renderQuestion();
+</script>
+</body>
+</html>
